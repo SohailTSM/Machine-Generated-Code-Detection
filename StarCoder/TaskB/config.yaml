@@ -1,0 +1,47 @@
+model:
+  name: "bigcode/starcoder2-3b"
+  cache_dir: "./models"
+  use_8bit: true
+  num_labels: 11           # 0=human + 10 LLM families
+  handcrafted_dim: 102     # 33 AST + 57 pattern + 12 stylometric (from MyProject/src)
+  class_names:
+    0:  "human"
+    1:  "deepseek-ai"
+    2:  "qwen"
+    3:  "01-ai"
+    4:  "bigcode"
+    5:  "gemma"
+    6:  "phi"
+    7:  "meta-llama"
+    8:  "ibm-granite"
+    9:  "mistral"
+    10: "openai"
+
+training:
+  batch_size: 64
+  gradient_accumulation_steps: 1
+  learning_rate: 5.0e-6
+  num_epochs: 50
+  warmup_ratio: 0.1
+  weight_decay: 0.01
+  max_grad_norm: 0.5
+  detect_anomaly: false
+  # Auto-compute class weights from training label distribution (handles 442K human vs ~2-10K AI)
+  use_class_weights: true
+
+data:
+  feature_extraction_workers: 14   # CPU cores for extract_features.py
+  train_file: "./data/task_b_training_set.parquet"
+  val_file:   "./data/task_b_validation_set.parquet"
+  test_file:  "../sem-eval-2026-task-13-subtask-b/Task_B/test.parquet"
+  cache_dir: "./cache"
+  max_length: 512
+  # Language balancing: cap each language to prevent one language dominating
+  balance_by_language: false   # Task B: keep natural distribution (authorship signal matters)
+  max_train_samples: null      # null = keep all; set e.g. 200000 to cap
+  max_val_samples: null
+  num_workers: 0
+
+output:
+  checkpoint_dir: "./checkpoints"
+  submission_file: "./submission.csv"

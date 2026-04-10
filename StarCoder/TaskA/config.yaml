@@ -1,0 +1,34 @@
+model:
+  name: "bigcode/starcoder2-3b"
+  cache_dir: "./models"
+  use_8bit: true
+  num_labels: 2
+  handcrafted_dim: 102
+
+training:
+  batch_size: 64
+  gradient_accumulation_steps: 1
+  learning_rate: 5.0e-6
+  num_epochs: 10
+  warmup_ratio: 0.1
+  weight_decay: 0.01
+  max_grad_norm: 0.5
+  detect_anomaly: false
+
+data:
+  feature_extraction_workers: 14   # CPU cores for extract_features.py (keep 8-12)
+  train_file: "./data/task_a_training_set.parquet"
+  val_file:   "./data/task_a_validation_set.parquet"
+  test_file:  "./data/task_a_test_set_sample.parquet"
+  test_sample_file: "./data/task_a_test_set_sample.parquet"
+  cache_dir: "./cache"
+  max_length: 512
+  # Data is already balanced (50/50 human/AI, 8 languages roughly equal) — no balancing needed
+  balance_by_language: false
+  max_train_samples: null
+  max_val_samples: null
+  num_workers: 0
+
+output:
+  checkpoint_dir: "./checkpoints"
+  submission_file: "./submission.csv"

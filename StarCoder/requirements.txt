@@ -1,0 +1,10 @@
+torch>=2.1.0
+transformers>=4.40.0
+bitsandbytes>=0.43.0
+accelerate>=0.29.0
+pandas>=2.0.0
+pyarrow>=14.0.0
+scikit-learn>=1.4.0
+tqdm>=4.66.0
+pyyaml>=6.0
+numpy>=1.26.0

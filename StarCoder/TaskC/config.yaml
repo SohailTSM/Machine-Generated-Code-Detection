@@ -1,0 +1,41 @@
+model:
+  name: "bigcode/starcoder2-3b"
+  cache_dir: "./models"
+  use_8bit: true
+  num_labels: 4            # 0=human 1=machine 2=hybrid 3=adversarial
+  handcrafted_dim: 102     # 33 AST + 57 pattern + 12 stylometric (from MyProject/src)
+  class_names:
+    0: "human"
+    1: "machine"
+    2: "hybrid"
+    3: "adversarial"
+
+training:
+  batch_size: 64
+  gradient_accumulation_steps: 1
+  learning_rate: 5.0e-6
+  num_epochs: 50
+  warmup_ratio: 0.1
+  weight_decay: 0.01
+  max_grad_norm: 0.5
+  detect_anomaly: false
+  # Auto-compute class weights from training label distribution
+  # (handles 485K human | 210K machine | 85K hybrid | 118K adversarial)
+  use_class_weights: true
+
+data:
+  feature_extraction_workers: 14   # CPU cores for extract_features.py
+  # Update these paths once you download the Kaggle datasets
+  train_file: "./data/task_c_training_set.parquet"#../sem-eval-2026-task-13-subtask-c
+  val_file:   "./data/task_c_validation_set.parquet"
+  test_file:  "./data/task_c_test_set.parquet"
+  cache_dir: "./cache"
+  max_length: 512
+  balance_by_language: false   # Task C: keep natural distribution
+  max_train_samples: null      # null = keep all; set e.g. 300000 to cap
+  max_val_samples: null
+  num_workers: 0
+
+output:
+  checkpoint_dir: "./checkpoints"
+  submission_file: "./submission.csv"
